@@ -1,0 +1,45 @@
+#! /usr/bin/env bash
+
+# Due to the size of the WRF/WPS repos, don't download all the blobs (code changes), only the commit & trees
+
+if [ -d "wrf-4.6.1" ]; then
+  echo "Will not overwrite existing wrf-4.6.1 directory"
+else
+
+  git clone --filter=blob:none --recurse-submodules git@github.com:gdcarver/WRF.git wrf-4.6.1
+  cd wrf-4.6.1
+  git checkout v4.6.1
+  cd ..
+  echo "WRF version 4.6.1 is ready."
+
+fi
+
+# Have to clone WRF twice because we need a serial build of WRF for WPS to link against,
+# otherwise we get link failures for missing OpenMP (as WPS doesn't use OpenMP)
+
+if [ -d "wrf-4.6.1-serial" ]; then
+  echo "Will not overwrite existing wrf-4.6.1-serial directory"
+else
+
+  git clone --filter=blob:none --recurse-submodules git@github.com:gdcarver/WRF.git wrf-4.6.1-serial
+  cd wrf-4.6.1-serial
+  git checkout v4.6.1
+  cd ..
+  echo "WRF version 4.6.1-serial is ready."
+
+fi
+
+# WPS version is still 4.6.0, there is no 4.6.1 (as of May/2026)
+
+if [ -d "wps-4.6.0" ]; then
+  echo "Will not overwrite existing wps-4.6.1 directory"
+else
+
+  git clone --filter=blob:none --recurse-submodules https://github.com/wrf-model/WPS wps-4.6.0
+  cd wps-4.6.0
+  git checkout v4.6.0
+  cd ..
+  echo "WPS version 4.6.0 is ready."
+
+fi
+

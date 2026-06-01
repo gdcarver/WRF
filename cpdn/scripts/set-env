@@ -1,0 +1,27 @@
+#
+# env settings for building & locating WRF required libs
+#
+# This file must be sourced: source ./set-env
+#
+
+export LIBDIR=${HOME}/wrf/libraries
+
+export PATH=${LIBDIR}/netcdf/bin:$PATH
+
+export NETCDF=${LIBDIR}/netcdf
+
+export CC=gcc
+export CXX=g++
+export CFLAGS="-m64"
+export FC=gfortran
+export FCFLAGS="-m64"
+export F77=gfortran
+export FFLAGS="-m64"
+export LDFLAGS="-m64"
+
+# WPS configure needs this
+# Don't link against the openmp enabled WRF build as WPS
+# doesn't use OpenMP.
+export WRF_DIR=$HOME/wrf/wrf-4.6.1-serial
+
+echo "WRF environment variables set."
