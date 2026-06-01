@@ -2,6 +2,10 @@
 
 # Make sure libs are built first
 
+# Clean the previous wrf build
+cd wrf-4.6.1
+./clean -a
+cd ..
 
 #  Set env vars
 source ./set-env
