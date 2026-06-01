@@ -17,11 +17,17 @@ export FC=gfortran
 export FCFLAGS="-m64"
 export F77=gfortran
 export FFLAGS="-m64"
+
+# WRF doesn't need this but keep for other tools that read LDFLAGS
 export LDFLAGS="-m64"
 
 # WPS configure needs this
-# Don't link against the openmp enabled WRF build as WPS
-# doesn't use OpenMP.
+# Don't link against the openmp enabled WRF build as WPS doesn't use OpenMP.
 export WRF_DIR=$HOME/wrf/wrf-4.6.1-serial
+
+# WRF configure consumes lowercase 'ldflags' and converts ! -> spaces
+# Required to a static linked executable as far as possible (taken from OIFS compiler options)
+export ldflags="-m64!-static-libgcc!-Wl,-Bstatic!-l:libgfortran.a!-l:libgomp.a!-l:libquadmath.a!-Wl,-Bdynamic"
+
 
 echo "WRF environment variables set."
