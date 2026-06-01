@@ -110,6 +110,10 @@ OBJS    =       \
                 hires_timer.o              \
 		clog.o
 
+CPDN_OBJS = \
+                ../cpdn/process_check/cpdn_checkpid.o \
+                ../cpdn/process_check/cpdn_process_check.o
+
 ifeq ($(DMPARALLEL),1)
 	RSL_OBJS= \
             ../external/RSL_LITE/feedback_domain_em_part1.o    \
@@ -127,9 +131,11 @@ SPECIAL =       module_internal_header_util.o pack_utils.o
 
 LIBTARGET    =  framework
 TARGETDIR    =  ./
-$(LIBTARGET) :  $(MODULES) $(OBJS) $(SPECIAL) $(NLOBJS) $(ALOBJS) $(DEALOBJS) $(RSL_OBJS)
-		$(AR) $(ARFLAGS) ../main/$(LIBWRFLIB) $(MODULES) $(OBJS) $(NLOBJS) $(ALOBJS) $(DEALOBJS) $(RSL_OBJS)
+$(LIBTARGET) :  $(MODULES) $(OBJS) $(CPDN_OBJS) $(SPECIAL) $(NLOBJS) $(ALOBJS) $(DEALOBJS) $(RSL_OBJS)
+		$(AR) $(ARFLAGS) ../main/$(LIBWRFLIB) $(MODULES) $(OBJS) $(CPDN_OBJS) $(NLOBJS) $(ALOBJS) $(DEALOBJS) $(RSL_OBJS)
 		$(RANLIB) ../main/$(LIBWRFLIB)
+
+module_integrate.o : ../cpdn/process_check/cpdn_checkpid.o
 
 nl_set_0_routines.o : nl_access_routines.F module_configure.o
 	$(CPP) -DNNN=0 -I../inc -DNL_set_ROUTINES nl_access_routines.F > xx0.f90
