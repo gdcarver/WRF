@@ -12,6 +12,7 @@ MODULES =       module_driver_constants.o  \
                 module_streams.o           \
                 module_domain.o            \
 		$(LLIST) \
+		cpdn_checkpid.o          \
 		module_integrate.o         \
                 module_timing.o            \
                 module_configure.o         \
@@ -111,7 +112,6 @@ OBJS    =       \
 		clog.o
 
 CPDN_OBJS = \
-                ../cpdn/process_check/cpdn_checkpid.o \
                 ../cpdn/process_check/cpdn_process_check.o
 
 ifeq ($(DMPARALLEL),1)
@@ -135,7 +135,11 @@ $(LIBTARGET) :  $(MODULES) $(OBJS) $(CPDN_OBJS) $(SPECIAL) $(NLOBJS) $(ALOBJS) $
 		$(AR) $(ARFLAGS) ../main/$(LIBWRFLIB) $(MODULES) $(OBJS) $(CPDN_OBJS) $(NLOBJS) $(ALOBJS) $(DEALOBJS) $(RSL_OBJS)
 		$(RANLIB) ../main/$(LIBWRFLIB)
 
-module_integrate.o : ../cpdn/process_check/cpdn_checkpid.o
+cpdn_checkpid.o : ../cpdn/process_check/cpdn_checkpid.F90
+	$(RM) $@
+	$(FC) -o $@ -c $(FCFLAGS) $(OMP) $(MODULE_DIRS) $(PROMOTION) $(FCSUFFIX) $<
+
+module_integrate.o : cpdn_checkpid.o
 
 nl_set_0_routines.o : nl_access_routines.F module_configure.o
 	$(CPP) -DNNN=0 -I../inc -DNL_set_ROUTINES nl_access_routines.F > xx0.f90

@@ -41,6 +41,8 @@ convert_em : convert_em.o
 module_initialize : ../dyn_$(SOLVER)/module_initialize_$(IDEAL_CASE).o
 #	( cd ../dyn_$(SOLVER) ;  $(MAKE) module_initialize_$(IDEAL_CASE).o )
 
+../frame/module_integrate.o : ../frame/cpdn_checkpid.o
+
 ## prevent real being compiled for OMP -- only for regtesting
 #$(SOLVER)_real : module_initialize real_$(SOLVER).o
 #	$(RANLIB) $(RLFLAGS) $(LIBWRFLIB)
