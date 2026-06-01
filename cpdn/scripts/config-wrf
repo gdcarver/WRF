@@ -6,6 +6,33 @@
 #  Set env vars
 source ./set-env
 
+apply_static_link_overrides() {
+    local configure_file="configure.wrf"
+    local gcc_libdir
+
+    if [[ ! -f "${configure_file}" ]]; then
+        echo "Error: ${configure_file} not found after configure" >&2
+        exit 1
+    fi
+
+    gcc_libdir="$(dirname "$(gfortran -print-file-name=libgfortran.a)")"
+    for archive in libgfortran.a libgomp.a libquadmath.a; do
+        if [[ ! -f "${gcc_libdir}/${archive}" ]]; then
+            echo "Error: ${gcc_libdir}/${archive} not found" >&2
+            exit 1
+        fi
+    done
+
+    # Keep only order-independent runtime flags in LDFLAGS_LOCAL; WRF places LDFLAGS before object files.
+    sed -i 's|^LDFLAGS_LOCAL[[:space:]]*=.*|LDFLAGS_LOCAL   =       -m64 -static-libgcc -static-libgfortran|' "${configure_file}"
+
+    # Force WRF's generated NetCDF link flags to select static archives rather than any shared libraries found first.
+    sed -i 's|-lnetcdff -lnetcdf|-l:libnetcdff.a -l:libnetcdf.a|g' "${configure_file}"
+
+    # Add order-sensitive runtime archives through LIB_LOCAL, which WRF links after its object files and static libraries.
+    sed -i "/^LIB_LOCAL[[:space:]]*=/ s|$| -L${gcc_libdir} -Wl,-Bstatic -l:libgomp.a -l:libquadmath.a -Wl,-Bdynamic|" "${configure_file}"
+}
+
 #  Configure wrf
 
 #  -- Output from configure --
@@ -27,6 +54,7 @@ cd wrf-4.6.1
 33
 1
 -EOF-
+apply_static_link_overrides
 
 # Now configure the serial build of WRF that WPS needs
 # 32 = serial
@@ -35,6 +63,6 @@ cd ../wrf-4.6.1-serial
 32
 1
 -EOF-
-
+apply_static_link_overrides
 
 

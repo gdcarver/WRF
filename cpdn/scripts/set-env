@@ -25,9 +25,4 @@ export LDFLAGS="-m64"
 # Don't link against the openmp enabled WRF build as WPS doesn't use OpenMP.
 export WRF_DIR=$HOME/wrf/wrf-4.6.1-serial
 
-# WRF configure consumes lowercase 'ldflags' and converts ! -> spaces
-# Required to a static linked executable as far as possible (taken from OIFS compiler options)
-export ldflags="-m64!-static-libgcc!-Wl,-Bstatic!-l:libgfortran.a!-l:libgomp.a!-l:libquadmath.a!-Wl,-Bdynamic"
-
-
 echo "WRF environment variables set."
