@@ -1,0 +1,18 @@
+
+CPDN specific code & scripts
+============================
+
+These files are for integrating the WRF model into the CPDN
+system and managing the configuration and compilation of the model.
+
+Scripts
+-------
+
+Copy the scripts into the parent directory to 'wrf' git repo and
+run them there.
+
+Process check
+-------------
+
+See the README file in this directory for implementation details.
+
