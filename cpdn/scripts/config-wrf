@@ -10,7 +10,7 @@ cd ..
 #  Set env vars
 source ./set-env
 
-apply_static_link_overrides() {
+apply_overrides() {
     local configure_file="configure.wrf"
     local gcc_libdir
 
@@ -44,17 +44,6 @@ apply_static_link_overrides() {
 
 #  Configure wrf
 
-#  -- Output from configure --
-#  NEEDS CHECKING IF OK
-
-# checking for perl5... no
-#checking for perl... found /usr/bin/perl (perl)
-#Will use NETCDF in dir: /home/ubuntu/wrf/libraries/netcdf
-#ADIOS2 not set in environment. Will configure WRF for use without.
-#HDF5 not set in environment. Will configure WRF for use without.
-#PHDF5 not set in environment. Will configure WRF for use without.
-#Will use 'time' to report timing information
-#$JASPERLIB or $JASPERINC not found in environment, configuring to build without grib2 I/O...
 
 #  33 = (smpar) GNU gcc/gfortran
 #   1 = basic nesting: parent domain with one or more nested domains.
@@ -63,7 +52,7 @@ cd wrf-4.6.1
 33
 1
 -EOF-
-apply_static_link_overrides
+apply_overrides
 
 # Now configure the serial build of WRF that WPS needs
 # 32 = serial
