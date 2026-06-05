@@ -10,7 +10,7 @@ cd ..
 #  Set env vars
 source ./set-env
 
-apply_overrides() {
+apply_lib_overrides() {
     local configure_file="configure.wrf"
     local gcc_libdir
 
@@ -28,7 +28,7 @@ apply_overrides() {
     done
 
     # Keep only order-independent runtime flags in LDFLAGS_LOCAL; WRF places LDFLAGS before object files.
-    sed -i 's|^LDFLAGS_LOCAL[[:space:]]*=.*|LDFLAGS_LOCAL   =       -m64 -static-libgcc |' "${configure_file}"
+    sed -i 's|^LDFLAGS_LOCAL[[:space:]]*=.*|LDFLAGS_LOCAL  =  -m64 -static-libgcc |' "${configure_file}"
 
     # Force WRF's generated NetCDF link flags to select static archives rather than any shared libraries found first.
     sed -i 's|-lnetcdff -lnetcdf|-l:libnetcdff.a -l:libnetcdf.a|g' "${configure_file}"
@@ -38,8 +38,20 @@ apply_overrides() {
     if grep -q '^LIB_LOCAL[[:space:]]*=' "${configure_file}"; then
         sed -i "/^LIB_LOCAL[[:space:]]*=/ s|$| -L${gcc_libdir} -Wl,-Bstatic -l:libgfortran.a -l:libgomp.a -l:libquadmath.a -Wl,-Bdynamic -ldl|" "${configure_file}"
     else
-        sed -i "/^LDFLAGS_LOCAL[[:space:]]*=/ a LIB_LOCAL       =       -L${gcc_libdir} -Wl,-Bstatic -l:libgfortran.a -l:libgomp.a -l:libquadmath.a -Wl,-Bdynamic -ldl" "${configure_file}"
+        sed -i "/^LDFLAGS_LOCAL[[:space:]]*=/ a LIB_LOCAL  =  -L${gcc_libdir} -Wl,-Bstatic -l:libgfortran.a -l:libgomp.a -l:libquadmath.a -Wl,-Bdynamic -ldl" "${configure_file}"
     fi
+}
+
+apply_compile_overrides() {
+    local configure_file="configure.wrf"
+
+    if [[ ! -f "${configure_file}" ]]; then
+        echo "Error: ${configure_file} not found after configure" >&2
+        exit 1
+    fi
+
+    # Change the default "debug" flag to include a traceback and catch useful FPE errors.
+    sed -i 's|^FCDEBUG[[:space:]]*=*|FCDEBUG  =  -g -fbacktrace -ffpe-trap=invalid,zero,overflow|' "${configure_file}"
 }
 
 #  Configure wrf
@@ -52,7 +64,8 @@ cd wrf-4.6.1
 33
 1
 -EOF-
-apply_overrides
+apply_lib_overrides
+apply_compile_overrides
 
 # Now configure the serial build of WRF that WPS needs
 # 32 = serial
@@ -61,5 +74,6 @@ cd ../wrf-4.6.1-serial
 32
 1
 -EOF-
-apply_static_link_overrides
+apply_lib__overrides
+apply_compile_overrides
 
