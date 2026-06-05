@@ -51,7 +51,7 @@ apply_compile_overrides() {
     fi
 
     # Change the default "debug" flag to include a traceback and catch useful FPE errors.
-    sed -i 's|^FCDEBUG[[:space:]]*=*|FCDEBUG  =  -g -fbacktrace -ffpe-trap=invalid,zero,overflow|' "${configure_file}"
+    sed -i 's|^FCDEBUG[[:space:]]*=.*|FCDEBUG  =  -g -fbacktrace -ffpe-trap=invalid,zero,overflow|' "${configure_file}"
 }
 
 #  Configure wrf
