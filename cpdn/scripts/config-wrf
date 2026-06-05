@@ -54,11 +54,14 @@ apply_compile_overrides() {
     sed -i 's|^FCDEBUG[[:space:]]*=.*|FCDEBUG  =  -g -fbacktrace -ffpe-trap=invalid,zero,overflow|' "${configure_file}"
 }
 
+
+################
 #  Configure wrf
+################
 
-
-#  33 = (smpar) GNU gcc/gfortran
+#  33 = (smpar:OpenMP) GNU gcc/gfortran
 #   1 = basic nesting: parent domain with one or more nested domains.
+
 cd wrf-4.6.1
 ./configure << -EOF-
 33
@@ -69,11 +72,12 @@ apply_compile_overrides
 
 # Now configure the serial build of WRF that WPS needs
 # 32 = serial
+
 cd ../wrf-4.6.1-serial
 ./configure << -EOF-
 32
 1
 -EOF-
-apply_lib__overrides
+apply_lib_overrides
 apply_compile_overrides
 
