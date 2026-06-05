@@ -34,7 +34,12 @@ apply_static_link_overrides() {
     sed -i 's|-lnetcdff -lnetcdf|-l:libnetcdff.a -l:libnetcdf.a|g' "${configure_file}"
 
     # Add order-sensitive runtime archives through LIB_LOCAL, which WRF links after its object files and static libraries.
-    sed -i "/^LIB_LOCAL[[:space:]]*=/ s|$| -L${gcc_libdir} -Wl,-Bstatic -l:libgomp.a -l:libquadmath.a -Wl,-Bdynamic|" "${configure_file}"
+    # LIB_LOCAL is not present in every generated configure.wrf, so create it when the template omits it.
+    if grep -q '^LIB_LOCAL[[:space:]]*=' "${configure_file}"; then
+        sed -i "/^LIB_LOCAL[[:space:]]*=/ s|$| -L${gcc_libdir} -Wl,-Bstatic -l:libgomp.a -l:libquadmath.a -Wl,-Bdynamic|" "${configure_file}"
+    else
+        sed -i "/^LDFLAGS_LOCAL[[:space:]]*=/ a LIB_LOCAL       =       -L${gcc_libdir} -Wl,-Bstatic -l:libgomp.a -l:libquadmath.a -Wl,-Bdynamic" "${configure_file}"
+    fi
 }
 
 #  Configure wrf
@@ -68,5 +73,4 @@ cd ../wrf-4.6.1-serial
 1
 -EOF-
 apply_static_link_overrides
-
 
