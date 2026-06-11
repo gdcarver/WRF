@@ -340,7 +340,7 @@ RECURSIVE SUBROUTINE integrate ( grid )
 ! kills the model if not.
 ! Only do check on coarsest grid to prevent excessive I/O on cpdn_progressfile.
             if ( grid%id == 1 ) then
-                print*,'CPDN DEBUG: calling cpdn_checkpid for grid%id = 1'
+                !!print*,'CPDN DEBUG: calling cpdn_checkpid for grid%id = 1'
                 call cpdn_checkpid( cpdn_is_running, model_standalone )
                 if ( .not. cpdn_is_running .and. .not. model_standalone ) then
                    call wrf_error_fatal(' ERROR: CPDN control process is NOT running.')
