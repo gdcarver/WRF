@@ -373,17 +373,19 @@ use module_wrf_error
 
 
       if (first) then                           ! True only on first call
-         
-         call init_para(alag_u,alaw_u,alar_u,csg_u,csw_u,csr_u,&
-                twini_u,trini_u,tgini_u,albg_u,albw_u,albr_u,emg_u,emw_u,&
-                emr_u,z0g_u,z0r_u,nd_u,strd_u,drst_u,ws_u,bs_u,h_b,d_b)
+!$OMP CRITICAL(BEP_INIT)
+         if (first) then
+            call init_para(alag_u,alaw_u,alar_u,csg_u,csw_u,csr_u,&
+                   twini_u,trini_u,tgini_u,albg_u,albw_u,albr_u,emg_u,emw_u,&
+                   emr_u,z0g_u,z0r_u,nd_u,strd_u,drst_u,ws_u,bs_u,h_b,d_b)
 
 !      Initialisation of the urban parameters and calculation of the view factors
-             
-         call icBEP(nd_u,h_b,d_b,ss_u,pb_u,nz_u,z_u)                                  
-          
-         first=.false.
 
+            call icBEP(nd_u,h_b,d_b,ss_u,pb_u,nz_u,z_u)
+
+            first=.false.
+         endif
+!$OMP END CRITICAL(BEP_INIT)
       endif ! first
 
       do ix=its,ite
