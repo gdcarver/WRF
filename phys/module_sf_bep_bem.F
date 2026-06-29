@@ -688,21 +688,23 @@ use module_wrf_error
 
 
       if (first) then                           ! True only on first call
+!$OMP CRITICAL(BEP_BEM_INIT)
+         if (first) then
+            call init_para(alag_u,alaw_u,alar_u,csg_u,csw_u,csr_u,&
+                   twini_u,trini_u,tgini_u,albg_u,albw_u,albr_u,albwin_u,emg_u,emw_u,&
+                   emr_u,emwind_u,z0g_u,z0r_u,nd_u,strd_u,drst_u,ws_u,bs_u,h_b,d_b,  &
+                   cop_u,pwin_u,beta_u,sw_cond_u,time_on_u,time_off_u,targtemp_u,    &
+                   bldac_frc_u,cooled_frc_u,                                         &
+                   gaptemp_u,targhum_u,gaphum_u,perflo_u,                            &
+                   gr_frac_roof_u,pv_frac_roof_u,                   &
+                   hsesf_u,hsequip,irho,gr_flag_u,gr_type_u)
 
-         call init_para(alag_u,alaw_u,alar_u,csg_u,csw_u,csr_u,&
-                twini_u,trini_u,tgini_u,albg_u,albw_u,albr_u,albwin_u,emg_u,emw_u,&
-                emr_u,emwind_u,z0g_u,z0r_u,nd_u,strd_u,drst_u,ws_u,bs_u,h_b,d_b,  &
-                cop_u,pwin_u,beta_u,sw_cond_u,time_on_u,time_off_u,targtemp_u,    &
-                bldac_frc_u,cooled_frc_u,                                         &
-                gaptemp_u,targhum_u,gaphum_u,perflo_u,                            &
-                gr_frac_roof_u,pv_frac_roof_u,                   & 
-                hsesf_u,hsequip,irho,gr_flag_u,gr_type_u)
- 
 !Initialisation of the urban parameters and calculation of the view factor
-        call icBEP(nd_u,h_b,d_b,ss_u,pb_u,nz_u,z_u)
-   
-      first=.false.
+           call icBEP(nd_u,h_b,d_b,ss_u,pb_u,nz_u,z_u)
 
+           first=.false.
+         endif
+!$OMP END CRITICAL(BEP_BEM_INIT)
       endif ! first
 
 do ix=its,ite
@@ -5703,4 +5705,3 @@ END MODULE module_sf_bep_bem
          INTEGER :: bep_bem_val_ngr_u
          bep_bem_val_ngr_u = ngr_u
       END FUNCTION bep_bem_ngr_u
-
