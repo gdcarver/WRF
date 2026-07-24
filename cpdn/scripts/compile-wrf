@@ -2,12 +2,15 @@
 
 source ./set-env
 
-cd wrf-4.6.1
-
 # em_real is the 3D real-data case.
+echo "Compiling OpenMP WRF. Log : compile.log"
+cd wrf-4.6.1
+echo ${PWD}
 ./compile em_real >& compile.log
 
 # now build the serial version for WPS
+echo "Compiling serial version of WRF for WPS. Log : compile.log"
 cd ../wrf-4.6.1-serial
+echo ${PWD}
 ./compile em_real >& compile.log
 
