@@ -69,8 +69,8 @@ state    real  LU_MASK          ij      misc        1         -     i3h1     "LU
 
 state    real    znu            k       dyn_em      1         -     irh      "znu"  "eta values on half (mass) levels"  ""
 state    real    znw            k       dyn_em      1         Z     i0rh     "znw"  "eta values on full (w) levels"  ""
-state    real   ZS              l        misc      -         Z     irh       "ZS"                    "DEPTHS OF CENTERS OF SOIL LAYERS"         "m"
-state    real   DZS             l        misc      -         Z     irh       "DZS"                   "THICKNESSES OF SOIL LAYERS"               "m"
+state    real   ZS              l        misc      -         Z     ir       "ZS"                    "DEPTHS OF CENTERS OF SOIL LAYERS"         "m"
+state    real   DZS             l        misc      -         Z     ir       "DZS"                   "THICKNESSES OF SOIL LAYERS"               "m"
 # cyl : variables for trajectory calculation
 state    real  traj_i         {ntraj}       dyn_em      1         Z     irh     "traj_i" "grid number of trajectory " ""                                     
 state    real  traj_j         {ntraj}       dyn_em      1         Z     irh     "traj_j" "grid number of trajectory " ""                                     
@@ -212,7 +212,7 @@ i1       real   ph_save        ikj     dyn_em      1         Z
 # Potential Temperature
 state    real   th_phy_m_t0    ikj      dyn_em      1         -     ird      "t"      "perturbation potential temperature theta-t0" "K"
 state    real   t              ikjb     dyn_em      2         -     \
-       i0rhusdf=(bdy_interp:dt)   "thm"      "either 1) pert moist pot temp=(1+Rv/Rd Qv)*(theta)-T0, or 2) pert dry pot temp=theta-T0; based on use_theta_m setting" "K"
+       i0rusdf=(bdy_interp:dt)   "thm"      "either 1) pert moist pot temp=(1+Rv/Rd Qv)*(theta)-T0, or 2) pert dry pot temp=theta-T0; based on use_theta_m setting" "K"
 
 state    real   t_init         ikj     dyn_em      1         -      ird       "t_init" "initial potential temperature" "K"
 i1       real   t_tend         ikj     dyn_em      1         -  
@@ -401,7 +401,7 @@ state    real   obs_savwt      hikj     dyn_em      1         X      -       "OB
 state   real    rdx            -        misc      -         -     ir        "rdx"                   "INVERSE X GRID LENGTH"         "m-1"      
 state   real    rdy            -        misc      -         -     ir        "rdy"                   "INVERSE Y GRID LENGTH"         "m-1"      
 state   real    area2d         ij       misc      -         -     rh        "area2d"                "Horizontal grid cell area, using dx, dy, and map factors" "m2"
-state   real    dx2d           ij       misc      -         -     rh        "dx2d"                  "Horizontal grid distance: sqrt(area2d)"   "m"
+state   real    dx2d           ij       misc      -         -     r        "dx2d"                  "Horizontal grid distance: sqrt(area2d)"   "m"
 state   real    dts            -        misc      -         -     ir        "dts"                   "SMALL TIMESTEP"         ""      
 state   real    dtseps         -        misc      -         -     ir        "dtseps"                "TIME WEIGHT CONSTANT FOR SMALL STEPS"         ""      
 state   real    resm           -        misc      -         -     ir        "resm"                  "TIME WEIGHT CONSTANT FOR SMALL STEPS"         ""      
@@ -1394,8 +1394,8 @@ state   real    h_diabatic     ikj     misc         1         -      rdu      "h
 state   real    qv_diabatic    ikj     misc         1         -      rdu      "qv_diabatic"           "MICROPHYSICS QV TENDENCY"            "g g-1 s-1"      
 state   real    qc_diabatic    ikj     misc         1         -      rdu      "qc_diabatic"           "MICROPHYSICS QC TENDENCY"            "g g-1 s-1"      
 state   real    msft           ij      misc         1         -     i012rhdu=(copy_fcnm)    "MAPFAC_M"         "Map scale factor on mass grid" ""
-state   real    msfu           ij      misc         1         X     i012rhdu=(copy_fcnm)    "MAPFAC_U"         "Map scale factor on u-grid" ""
-state   real    msfv           ij      misc         1         Y     i012rhdu=(copy_fcnm)    "MAPFAC_V"         "Map scale factor on v-grid" ""
+state   real    msfu           ij      misc         1         X     i012rdu=(copy_fcnm)    "MAPFAC_U"         "Map scale factor on u-grid" ""
+state   real    msfv           ij      misc         1         Y     i012rdu=(copy_fcnm)    "MAPFAC_V"         "Map scale factor on v-grid" ""
 state   real    msftx          ij      misc         1         -     i012rhdu=(copy_fcnm)    "MAPFAC_MX"         "Map scale factor on mass grid, x direction" ""
 state   real    msfty          ij      misc         1         -     i012rhdu=(copy_fcnm)    "MAPFAC_MY"         "Map scale factor on mass grid, y direction" ""
 state   real    msfux          ij      misc         1         X     i012rhdu=(copy_fcnm)    "MAPFAC_UX"         "Map scale factor on u-grid, x direction" ""
@@ -1484,8 +1484,8 @@ state   real    tlp            -       misc         -         -     i02r     "tl
 state   real    tiso           -       misc         -         -     i02r     "tiso"                  "TEMP AT WHICH THE BASE T TURNS CONST"  "K"
 state   real    tlp_strat      -       misc         -         -     i02r     "tlp_strat"             "BASE STATE LAPSE RATE (DT/D(LN(P)) IN STRATOSPHERE"  "K"
 state   real    p_strat        -       misc         -         -     i02r     "p_strat"               "BASE STATE PRESSURE AT BOTTOM OF STRATOSPHERE" "Pa"
-state   real    max_msftx      -       misc         -         -      rh       "max_msftx"             "Max map factor in domain"  ""
-state   real    max_msfty      -       misc         -         -      rh       "max_msfty"             "Max map factor in domain"  ""
+state   real    max_msftx      -       misc         -         -      r       "max_msftx"             "Max map factor in domain"  ""
+state   real    max_msfty      -       misc         -         -      r       "max_msfty"             "Max map factor in domain"  ""
 
 # NUWRF:  State variables for Goddard microphysics
 state   real    phys_tot       ikj      misc        1         -     -         "PHYS_TOT"              "TOTAL LATENT HEATING RATE"                       "K s-1"
@@ -1842,10 +1842,10 @@ state    real  SWCF             ij      misc        1         -      r        "S
 state    real  LWCF             ij      misc        1         -      r        "LWCF"                  "LONG WAVE CLOUD FORCING AT TOA"                      "W m-2"
 state    real  OLR              ij      misc        1         -      r        "OLR"                   "TOA OUTGOING LONG WAVE"                              "W m-2"
 
-state    real  XLAT_U           ij      dyn_em      1         X     i012rhdu=(copy_fcnm)         "XLAT_U"              "LATITUDE, SOUTH IS NEGATIVE"                                          "degree_north"
-state    real  XLONG_U          ij      dyn_em      1         X     i012rhd=(interp_fcn_blint_ll:xlat_u,input_from_file)u=(copy_fcnm)         "XLONG_U"             "LONGITUDE, WEST IS NEGATIVE"                                          "degree_east"
-state    real  XLAT_V           ij      dyn_em      1         Y     i012rhdu=(copy_fcnm)         "XLAT_V"              "LATITUDE, SOUTH IS NEGATIVE"                                          "degree_north"
-state    real  XLONG_V          ij      dyn_em      1         Y     i012rhd=(interp_fcn_blint_ll:xlat_v,input_from_file)u=(copy_fcnm)         "XLONG_V"             "LONGITUDE, WEST IS NEGATIVE"                                          "degree_east"
+state    real  XLAT_U           ij      dyn_em      1         X     i012rdu=(copy_fcnm)         "XLAT_U"              "LATITUDE, SOUTH IS NEGATIVE"                                          "degree_north"
+state    real  XLONG_U          ij      dyn_em      1         X     i012rd=(interp_fcn_blint_ll:xlat_u,input_from_file)u=(copy_fcnm)         "XLONG_U"             "LONGITUDE, WEST IS NEGATIVE"                                          "degree_east"
+state    real  XLAT_V           ij      dyn_em      1         Y     i012rdu=(copy_fcnm)         "XLAT_V"              "LATITUDE, SOUTH IS NEGATIVE"                                          "degree_north"
+state    real  XLONG_V          ij      dyn_em      1         Y     i012rd=(interp_fcn_blint_ll:xlat_v,input_from_file)u=(copy_fcnm)         "XLONG_V"             "LONGITUDE, WEST IS NEGATIVE"                                          "degree_east"
 state    real  ALBEDO           ij      misc        1         -      rh          "ALBEDO"                   "ALBEDO"
 state    real  CLAT             ij      misc        1         -     i012rdu=(copy_fcnm)         "CLAT"                "COMPUTATIONAL GRID LATITUDE, SOUTH IS NEGATIVE"                       "degree_north"
 state    real  ALBBCK           ij      misc        1         -     i0124r   "ALBBCK"                "BACKGROUND ALBEDO"        ""
