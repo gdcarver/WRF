@@ -4,7 +4,25 @@ source ./set-env
 
 cd wps-4.6.0
 
+./clean -a
+
 ./configure --build-grib2-libs << -EOF-
 1
 -EOF-
+
+# correct the missing static libraries for correct linking
+
+cat << EOF
+ *** IGNORE THE CONFIG WARNING. Fix in configure.wps.
+1/ Edit configure.wps
+2/ Replace the -L netcdf line in WRF_LIBS with:
+
+                        -L${HOME}/wrf/libraries/netcdf/lib -lnetcdff -lnetcdf \
+                        -L${HOME}/wrf/libraries/hdf5/lib -lhdf5_hl -lhdf5 -lz -ldl -lm
+3/ Save then proceed with compile-wps.
+EOF
+
+
+
+
 

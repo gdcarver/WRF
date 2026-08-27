@@ -9,17 +9,23 @@ export LIBDIR=${HOME}/wrf/libraries
 export PATH=${LIBDIR}/netcdf/bin:$PATH
 
 export NETCDF=${LIBDIR}/netcdf
+export NETCDFF=${LIBDIR}/netcdf
+export HDF=${LIBDIR}/hdf5
+export HDF5="${HDF}"
 
 export CC=gcc
 export CXX=g++
+export CPPFLAGS="-I${NETCDF}/include -I${HDF}/include"
 export CFLAGS="-m64"
 export FC=gfortran
 export FCFLAGS="-m64"
 export F77=gfortran
 export FFLAGS="-m64"
-
-# WRF doesn't need this but keep for other tools that read LDFLAGS
-export LDFLAGS="-m64"
+# must separate libpaths from libs in order for configure to work correctly 
+# with static linking for netcdf-fortran. lib order is crucial.
+# -ldl is required for HDF5.
+export LDFLAGS="-m64 -L${NETCDF}/lib -L${HDF}/lib"
+export LIBS="-lnetcdff -lnetcdf -lhdf5_hl -lhdf5 -lz -lm -ldl"
 
 # WPS configure needs this
 # Don't link against the openmp enabled WRF build as WPS doesn't use OpenMP.

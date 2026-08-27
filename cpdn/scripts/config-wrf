@@ -31,14 +31,14 @@ apply_lib_overrides() {
     sed -i 's|^LDFLAGS_LOCAL[[:space:]]*=.*|LDFLAGS_LOCAL  =  -m64 -static-libgcc |' "${configure_file}"
 
     # Force WRF's generated NetCDF link flags to select static archives rather than any shared libraries found first.
-    sed -i 's|-lnetcdff -lnetcdf|-l:libnetcdff.a -l:libnetcdf.a|g' "${configure_file}"
+    sed -i 's|-lnetcdff -lnetcdf|-l:libnetcdff.a -l:libnetcdf.a -l:libhdf5_hl.a -l:libhdf5.a|g' "${configure_file}"
 
     # Add order-sensitive runtime archives through LIB_LOCAL, which WRF links after its object files and static libraries.
     # LIB_LOCAL is not present in every generated configure.wrf, so create it when the template omits it.
     if grep -q '^LIB_LOCAL[[:space:]]*=' "${configure_file}"; then
-        sed -i "/^LIB_LOCAL[[:space:]]*=/ s|$| -L${gcc_libdir} -Wl,-Bstatic -l:libgfortran.a -l:libgomp.a -l:libquadmath.a -Wl,-Bdynamic -ldl|" "${configure_file}"
+        sed -i "/^LIB_LOCAL[[:space:]]*=/ s|$| -L${gcc_libdir} -Wl,-Bstatic -l:libgfortran.a -l:libhdf5_hl.a -l:libhdf5.a -l:libgomp.a -l:libquadmath.a -Wl,-Bdynamic -lz -ldl -lm|" "${configure_file}"
     else
-        sed -i "/^LDFLAGS_LOCAL[[:space:]]*=/ a LIB_LOCAL  =  -L${gcc_libdir} -Wl,-Bstatic -l:libgfortran.a -l:libgomp.a -l:libquadmath.a -Wl,-Bdynamic -ldl" "${configure_file}"
+        sed -i "/^LDFLAGS_LOCAL[[:space:]]*=/ a LIB_LOCAL  =  -L${gcc_libdir} -Wl,-Bstatic -l:libgfortran.a -l:libhdf5_hl.a -l:libhdf5.a -l:libgomp.a -l:libquadmath.a -Wl,-Bdynamic -lz -ldl -lm" "${configure_file}"
     fi
 }
 
